@@ -1,0 +1,208 @@
+# Gestor Espacial de Inventario 3D
+
+Aplicacion web para registrar y visualizar objetos de inventario dentro de un espacio tridimensional. Cada objeto se representa como un cubo en una escena 3D y contiene un nombre, una posicion `(X, Y, Z)`, un color y unas dimensiones.
+
+## Para que sirve
+
+El sistema permite:
+
+- Crear varios objetos 3D desde un formulario.
+- Ubicar cada objeto mediante coordenadas tridimensionales.
+- Elegir un color para cada objeto.
+- Seleccionar objetos directamente en la escena.
+- Mover, rotar y escalar objetos seleccionados.
+- Eliminar objetos con la tecla `Z`, `Delete` o `Backspace`.
+- Guardar los objetos en una base de datos SQLite.
+- Cambiar entre modo claro y modo oscuro sin afectar las operaciones del inventario.
+- Usar la barra de opciones ubicada arriba a la derecha en PC y compacta, responsive y alineada a la izquierda en celulares.
+
+## Tecnologias utilizadas
+
+### Frontend
+
+- HTML5 y CSS3.
+- JavaScript con modulos ES.
+- Three.js para la escena 3D, la cuadricula, la camara y los controles.
+- `OrbitControls` para mover la camara.
+- `TransformControls` para mover, rotar y escalar objetos.
+
+### Backend
+
+- Python.
+- FastAPI para crear la API REST.
+- Uvicorn como servidor ASGI.
+- SQLModel y SQLAlchemy para trabajar con los modelos y repositorios.
+- SQLite como base de datos local.
+- `aiosqlite` para acceso asincrono a SQLite.
+- Pydantic para validar los datos recibidos por la API.
+
+## Estructura del proyecto
+
+```text
+Gestor Espacial de Inventario 3D/
+├── README.md
+├── requirements.txt
+├── backend/
+│   ├── main.py
+│   ├── spatial_inventory.db
+│   └── app/
+│       ├── core/
+│       │   └── database.py
+│       ├── domain/
+│       │   └── entities.py
+│       ├── infrastructure/
+│       │   ├── models.py
+│       │   └── repositories.py
+│       ├── presentation/
+│       │   ├── routes.py
+│       │   └── schemas.py
+│       └── use_cases/
+│           └── item_use_cases.py
+└── frontend/
+    ├── index.html
+    ├── css/
+    │   ├── main.css
+    │   ├── base.css
+    │   ├── components.css
+    │   ├── panel.css
+    │   ├── responsive.css
+    │   └── variables.css
+    └── js/
+        ├── api.js
+        ├── main.js
+        ├── scene.js
+        └── components/
+            └── item3d.js
+```
+
+## Como funciona
+
+1. El usuario completa el nombre, la posicion y el color del objeto.
+2. El frontend envia los datos al backend mediante una peticion `POST`.
+3. FastAPI valida la informacion recibida con Pydantic.
+4. El repositorio crea un registro en la tabla `spatial_items` y lo guarda con `commit()`.
+5. El backend devuelve el objeto creado con su identificador unico.
+6. Three.js crea el cubo y lo agrega a la escena sin eliminar los objetos anteriores.
+7. El objeto nuevo queda seleccionado para poder manipularlo inmediatamente.
+8. Los objetos creados durante la sesion tambien se conservan en `sessionStorage`, para restaurarlos si el navegador recarga la pagina.
+9. Al eliminarlo, el frontend envia una peticion `DELETE`; el backend borra el registro de SQLite y despues el frontend retira el cubo de la escena y de la sesion.
+10. La barra de opciones muestra las acciones disponibles (`M`, `R`, `S`, `Z` y `Esc`) y tambien permite activarlas con clic.
+
+La pagina inicia intencionalmente con la escena vacia. Los registros antiguos que existan en la base de datos no se dibujan automaticamente al abrir una sesion nueva. Los objetos creados durante la sesion se conservan en la escena y se restauran si el navegador recarga la pagina, evitando que desaparezcan al agregar otro objeto.
+
+Si se deja la posicion inicial `(0, 0.5, 0)`, los objetos nuevos se colocan automaticamente en posiciones libres para evitar que queden superpuestos. Las coordenadas personalizadas se respetan.
+
+El modo claro u oscuro solo cambia la apariencia de la interfaz, el fondo, la iluminacion y la cuadricula. La preferencia se conserva en `localStorage` y no modifica las operaciones del inventario.
+
+## Controles
+
+| Tecla                  | Accion                                                             |
+| ---------------------- | ------------------------------------------------------------------ |
+| `M`                    | Mover el objeto seleccionado                                       |
+| `R`                    | Rotar el objeto seleccionado                                       |
+| `S`                    | Escalar el objeto seleccionado                                     |
+| `Z`                    | Eliminar el objeto seleccionado de la escena y de la base de datos |
+| `Esc`                  | Deseleccionar el objeto                                            |
+| `Delete` / `Backspace` | Eliminar el objeto seleccionado                                    |
+| Arrastrar con el mouse | Mover la camara alrededor de la escena                             |
+
+Los controles tambien se pueden pulsar desde la barra de opciones. En pantallas de escritorio esta barra se muestra arriba a la derecha para no cubrir el formulario de creacion; en celulares se muestra compacta, alineada a la izquierda y debajo del boton de modo claro u oscuro.
+
+## Base de datos
+
+La aplicacion utiliza SQLite y crea el archivo:
+
+```text
+backend/spatial_inventory.db
+```
+
+La tabla principal es `spatial_items`. Cada registro contiene:
+
+- `id`: identificador UUID.
+- `name`: nombre del objeto.
+- `space_id`: espacio al que pertenece.
+- `color`: color hexadecimal.
+- `x`, `y`, `z`: posicion del objeto.
+- `width`, `height`, `depth`: dimensiones del objeto.
+
+La base de datos se inicializa automaticamente cuando se inicia FastAPI.
+
+## Instalacion
+
+Se recomienda utilizar Python 3.10 o una version posterior.
+
+Desde la raiz del proyecto, crea y activa un entorno virtual:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+Instala las dependencias:
+
+```powershell
+pip install -r requirements.txt
+```
+
+## Ejecucion del backend
+
+Entra en la carpeta `backend` y ejecuta Uvicorn:
+
+```powershell
+cd backend
+uvicorn main:app --reload --port 8000
+```
+
+La API estara disponible en:
+
+```text
+http://127.0.0.1:8000
+```
+
+Documentacion interactiva de FastAPI:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+Comprobacion de estado:
+
+```text
+http://127.0.0.1:8000/health
+```
+
+## Ejecucion del frontend
+
+Abre `frontend/index.html` con Live Server desde VS Code o utiliza cualquier servidor estatico local. Por ejemplo, con Live Server la direccion suele ser:
+
+```text
+http://127.0.0.1:5500/frontend/index.html
+```
+
+El frontend espera que el backend este ejecutandose en `http://127.0.0.1:8000`.
+
+## Endpoints principales
+
+| Metodo   | Ruta                             | Funcion                                 |
+| -------- | -------------------------------- | --------------------------------------- |
+| `GET`    | `/health`                        | Comprueba que la API esta activa.       |
+| `POST`   | `/api/v1/items/`                 | Crea un objeto 3D.                      |
+| `GET`    | `/api/v1/items/space/{space_id}` | Consulta los objetos de un espacio.     |
+| `DELETE` | `/api/v1/items/{item_id}`        | Elimina un objeto por su UUID.          |
+| `PUT`    | `/api/v1/items/{item_id}`        | Pendiente de implementar en el backend. |
+
+## Arquitectura del backend
+
+El backend esta separado por responsabilidades:
+
+- `core`: configuracion de la base de datos y sesiones.
+- `domain`: entidades del dominio.
+- `infrastructure`: modelos SQLModel y repositorios de persistencia.
+- `use_cases`: reglas de negocio para crear, consultar y eliminar objetos.
+- `presentation`: rutas HTTP y esquemas de validacion.
+
+Este enfoque permite modificar la persistencia o la interfaz de la API sin mezclar toda la logica en un solo archivo.
+
+## Estado del proyecto
+
+El proyecto funciona como un prototipo local de inventario espacial 3D. Los datos se guardan localmente en SQLite y el frontend se sirve como una pagina estatica. Mover, rotar y escalar funcionan visualmente durante la sesion; el frontend ya intenta sincronizar esos cambios mediante `PUT`, pero el endpoint correspondiente aun debe implementarse en el backend para que queden guardados permanentemente. Para un entorno de produccion se deberian agregar autenticacion, una base de datos centralizada, control de usuarios y configuracion de CORS restringida.

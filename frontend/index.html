@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Spatial Asset Manager</title>
+    <link rel="stylesheet" href="css/main.css">
+    <!-- Import Map para Three.js y OrbitControls -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Canvas 3D de WebGL -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Overlay Neón 3D (Panel Flotante) -->
+    <div class="ui-container">
+        <header class="header">
+            <h1>3D Spatial Manager</h1>
+            <p>Espacio: <span id="space-tag">almacen_principal</span></p>
+        </header>
+
+        <form id="item-form" class="glass-panel">
+            <h3>Agregar Objeto 3D</h3>
+            
+            <input type="text" id="name" placeholder="Nombre (ej. Caja A1)" required />
+            
+            <div class="input-group">
+                <label>Posición (X, Y, Z)</label>
+                <div class="coords">
+                    <input type="number" id="pos-x" step="0.5" value="0" placeholder="X" required />
+                    <input type="number" id="pos-y" step="0.5" value="0.5" placeholder="Y" required />
+                    <input type="number" id="pos-z" step="0.5" value="0" placeholder="Z" required />
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Color Neón</label>
+                <input type="color" id="color" value="#00f3ff" />
+            </div>
+
+            <button type="submit" id="btn-add">Guardar en Espacio 3D</button>
+        </form>
+    </div>
+    <!-- Botón de Modo Oscuro / Claro Arriba a la Derecha -->
+    <div class="theme-toggle-container">
+        <button type="button" id="theme-toggle-btn" class="theme-btn">
+            🌙 <span id="theme-text">Modo Claro</span>
+        </button>
+    </div>
+        <!-- Barra Flotante de Atajos en la Parte Superior -->
+    <div class="shortcuts-bar">
+        <div class="shortcut-item active" id="key-m">
+            <kbd>M</kbd> <span>Mover objeto seleccionado</span>
+        </div>  
+        <div class="shortcut-item" id="key-r">
+            <kbd>R</kbd> <span>Rotar objeto seleccionado</span>
+        </div>
+        <div class="shortcut-item" id="key-s">
+            <kbd>S</kbd> <span>Escalar objeto seleccionado</span>
+        </div>
+        <div class="shortcut-divider"></div>
+        <div class="shortcut-item" id="key-z">
+            <kbd>Z</kbd> <span>Eliminar objeto seleccionado</span>
+        </div>
+        <div class="shortcut-divider"></div>
+        <div class="shortcut-item" id="key-esc">
+            <kbd>Esc</kbd> <span>Deseleccionar objeto</span>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+/* Contenedor UI Izquierdo (Desktop) */
+.ui-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 12;
+    pointer-events: none;
+    max-width: 320px;
+    width: calc(100% - 40px);
+}
+
+.ui-container * {
+    pointer-events: auto;
+}
+
+.header h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--grid-color-1);
+    text-shadow: 0 0 12px var(--accent-glow);
+    letter-spacing: -0.5px;
+}
+
+.header p {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    opacity: 0.75;
+    margin-bottom: 12px;
+}
+
+/* Panel Glassmorphism */
+.glass-panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.glass-panel h3 {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.glass-panel input[type="text"],
+.glass-panel input[type="number"] {
+    width: 100%;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text-color);
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.glass-panel input[type="text"]:focus,
+.glass-panel input[type="number"]:focus {
+    border-color: var(--grid-color-1);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.coords {
+    display: flex;
+    gap: 8px;
+}
+
+.input-group {
+    flex: 1;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.7rem;
+    opacity: 0.8;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+input[type="color"] {
+    width: 100%;
+    height: 38px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 14px;
+    background: transparent;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background: linear-gradient(135deg, var(--grid-color-1), #0066ff);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98);
+}

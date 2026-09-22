@@ -1,0 +1,19 @@
+:root {
+    --bg-color: #050811;
+    --panel-bg: rgba(15, 23, 42, 0.8);
+    --text-color: #e2e8f0;
+    --border-color: rgba(0, 243, 255, 0.25);
+    --grid-color-1: #00f3ff;
+    --grid-color-2: #334155;
+    --accent-glow: rgba(0, 243, 255, 0.4);
+}
+
+[data-theme="light"] {
+    --bg-color: #f1f5f9;
+    --panel-bg: rgba(255, 255, 255, 0.88);
+    --text-color: #1e293b;
+    --border-color: rgba(0, 102, 255, 0.3);
+    --grid-color-1: #0066ff;
+    --grid-color-2: #cbd5e1;
+    --accent-glow: rgba(0, 102, 255, 0.3);
+}
