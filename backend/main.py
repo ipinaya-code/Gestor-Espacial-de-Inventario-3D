@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
 
 from app.core.database import init_db
 from app.presentation.routes import router as items_router
@@ -33,3 +35,6 @@ app.include_router(items_router)
 @app.get("/health", tags=["Health Check"])
 async def health_check():
     return {"status": "ok", "message": "3D Spatial Asset Manager API funcionando correctamente"}
+
+frontend_directory = Path(__file__).resolve().parent.parent / "frontend"
+app.mount("/", StaticFiles(directory=frontend_directory, html=True), name="frontend")

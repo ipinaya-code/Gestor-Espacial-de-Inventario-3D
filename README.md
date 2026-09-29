@@ -41,6 +41,7 @@ El sistema permite:
 ```text
 Gestor Espacial de Inventario 3D/
 ├── README.md
+├── render.yaml
 ├── requirements.txt
 ├── backend/
 │   ├── main.py
@@ -179,17 +180,28 @@ Abre `frontend/index.html` con Live Server desde VS Code o utiliza cualquier ser
 http://127.0.0.1:5500/frontend/index.html
 ```
 
-El frontend espera que el backend este ejecutandose en `http://127.0.0.1:8000`.
+Al usar Live Server local, el frontend se conecta al backend en `http://127.0.0.1:8000`. Si se abre desde el servicio Render, usa automaticamente el mismo dominio para la API.
+
+## Despliegue en Render
+
+El archivo `render.yaml` configura un servicio web unico que sirve el frontend y la API, y guarda SQLite en un disco persistente montado en `/var/data`. Para desplegarlo:
+
+1. Sube los cambios a la rama `main` de GitHub.
+2. En Render, crea un Blueprint y conecta el repositorio `Gestor-Espacial-de-Inventario-3D`.
+3. Revisa el plan y los costos mostrados por Render antes de confirmar la creacion.
+4. Al terminar el despliegue, abre el dominio `onrender.com` asignado al servicio.
+
+El Blueprint usa un plan web pago y un disco persistente de 1 GB. Los servicios gratuitos de Render no admiten discos persistentes, por lo que no sirven para conservar SQLite de forma fiable entre reinicios y despliegues. La base alojada comienza vacia; los datos que solo esten en el archivo SQLite local no se copian automaticamente. El enlace publico no tiene autenticacion: cualquier persona que lo conozca puede crear o eliminar objetos.
 
 ## Endpoints principales
 
-| Metodo   | Ruta                             | Funcion                                 |
-| -------- | -------------------------------- | --------------------------------------- |
-| `GET`    | `/health`                        | Comprueba que la API esta activa.       |
-| `POST`   | `/api/v1/items/`                 | Crea un objeto 3D.                      |
-| `GET`    | `/api/v1/items/space/{space_id}` | Consulta los objetos de un espacio.     |
-| `DELETE` | `/api/v1/items/{item_id}`        | Elimina un objeto por su UUID.          |
-| `PUT`    | `/api/v1/items/{item_id}`        | Pendiente de implementar en el backend. |
+| Metodo   | Ruta                             | Funcion                                      |
+| -------- | -------------------------------- | -------------------------------------------- |
+| `GET`    | `/health`                        | Comprueba que la API esta activa.            |
+| `POST`   | `/api/v1/items/`                 | Crea un objeto 3D.                           |
+| `GET`    | `/api/v1/items/space/{space_id}` | Consulta los objetos de un espacio.          |
+| `DELETE` | `/api/v1/items/{item_id}`        | Elimina un objeto por su UUID.               |
+| `PUT`    | `/api/v1/items/{item_id}`        | Actualiza los datos persistibles del objeto. |
 
 ## Arquitectura del backend
 
@@ -205,4 +217,4 @@ Este enfoque permite modificar la persistencia o la interfaz de la API sin mezcl
 
 ## Estado del proyecto
 
-El proyecto funciona como un prototipo local de inventario espacial 3D. Los datos se guardan localmente en SQLite y el frontend se sirve como una pagina estatica. Mover, rotar y escalar funcionan visualmente durante la sesion; el frontend ya intenta sincronizar esos cambios mediante `PUT`, pero el endpoint correspondiente aun debe implementarse en el backend para que queden guardados permanentemente. Para un entorno de produccion se deberian agregar autenticacion, una base de datos centralizada, control de usuarios y configuracion de CORS restringida.
+El proyecto funciona como un prototipo de inventario espacial 3D. En local usa SQLite en `backend/spatial_inventory.db`; en Render puede conservar la base en su disco persistente. La rotacion y escala son visuales, mientras que el endpoint `PUT` persiste los campos admitidos por el modelo, incluida la posicion. Antes de compartir el enlace para uso publico, se recomienda agregar autenticacion y restringir CORS.

@@ -1,9 +1,13 @@
+import os
+
 from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-# Base de datos SQLite asíncrona local
-DATABASE_URL = "sqlite+aiosqlite:///./spatial_inventory.db"
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "sqlite+aiosqlite:///./spatial_inventory.db",
+)
 
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 
