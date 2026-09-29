@@ -1,8 +1,9 @@
 const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-const API_ORIGIN = isLocalHost
+const API_URL = isLocalHost
     ? `${window.location.protocol}//${window.location.hostname}:8000`
-    : window.location.origin;
-const API_BASE_URL = `${API_ORIGIN}/api/v1/items`;
+    : 'https://gestor-espacial-de-inventario-3d-vl1.onrender.com';
+const API_BASE_URL = `${API_URL}/api/v1/items`;
+
 
 // Obtener todos los objetos 3D pertenecientes a un espacio
 export async function fetchItemsBySpace(spaceId) {
