@@ -3,10 +3,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from uuid import UUID
 
-from app.core.database import get_session
-from app.infrastructure.repositories import ItemRepository
-from app.use_cases.item_use_cases import ItemUseCases
-from app.presentation.schemas import ItemCreateSchema, ItemResponseSchema, ItemUpdateSchema
+try:
+    from app.core.database import get_session
+    from app.infrastructure.repositories import ItemRepository
+    from app.use_cases.item_use_cases import ItemUseCases
+    from app.presentation.schemas import ItemCreateSchema, ItemResponseSchema, ItemUpdateSchema
+except ModuleNotFoundError:
+    from backend.app.core.database import get_session
+    from backend.app.infrastructure.repositories import ItemRepository
+    from backend.app.use_cases.item_use_cases import ItemUseCases
+    from backend.app.presentation.schemas import ItemCreateSchema, ItemResponseSchema, ItemUpdateSchema
 
 router = APIRouter(prefix="/api/v1/items", tags=["Spatial Items"])
 

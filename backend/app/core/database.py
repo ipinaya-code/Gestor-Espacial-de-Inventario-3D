@@ -1,23 +1,6 @@
-import os
+try:
+    from database.connection import DATABASE_URL, engine, get_session, init_db
+except ModuleNotFoundError:
+    from backend.database.connection import DATABASE_URL, engine, get_session, init_db
 
-from sqlmodel import SQLModel
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
-
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "sqlite+aiosqlite:///./spatial_inventory.db",
-)
-
-engine = create_async_engine(DATABASE_URL, echo=True, future=True)
-
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
-
-async def get_session() -> AsyncSession:
-    async_session = sessionmaker(
-        engine, class_=AsyncSession, expire_on_commit=False
-    )
-    async with async_session() as session:
-        yield session
+__all__ = ["DATABASE_URL", "engine", "get_session", "init_db"]

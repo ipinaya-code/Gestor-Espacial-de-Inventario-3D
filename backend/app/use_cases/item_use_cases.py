@@ -1,7 +1,12 @@
 from typing import List, Optional
 from uuid import UUID
-from app.infrastructure.repositories import ItemRepository
-from app.presentation.schemas import ItemCreateSchema, ItemUpdateSchema, ItemResponseSchema, Position3DSchema, Dimensions3DSchema
+
+try:
+    from app.infrastructure.repositories import ItemRepository
+    from app.presentation.schemas import ItemCreateSchema, ItemUpdateSchema, ItemResponseSchema, Position3DSchema, Dimensions3DSchema
+except ModuleNotFoundError:
+    from backend.app.infrastructure.repositories import ItemRepository
+    from backend.app.presentation.schemas import ItemCreateSchema, ItemUpdateSchema, ItemResponseSchema, Position3DSchema, Dimensions3DSchema
 
 class ItemUseCases:
     def __init__(self, repository: ItemRepository):

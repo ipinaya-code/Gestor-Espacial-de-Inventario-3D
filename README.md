@@ -1,6 +1,27 @@
-# Gestor Espacial de Inventario 3D
+# Mood Module
 
-Aplicacion web para registrar y visualizar objetos de inventario dentro de un espacio tridimensional. Cada objeto se representa como un cubo en una escena 3D y contiene un nombre, una posicion `(X, Y, Z)`, un color y unas dimensiones.
+Plataforma educativa interactiva para crear y manipular objetos en un espacio tridimensional. La experiencia actual funciona como un editor 3D de inventario; la vision del producto es evolucionar hacia un entorno modular asistido por un agente que ayude a aprender haciendo.
+
+## Vision del producto
+
+El nombre expresa dos ideas complementarias:
+
+- **Mood** representa el estado, el ambiente y la experiencia de trabajo: la plataforma debe sentirse dinamica y adaptarse al contexto y al nivel del usuario.
+- **Module** representa una plataforma compuesta por modulos que puedan crecer y asumir capacidades distintas, como modelado, aprendizaje guiado y automatizacion.
+
+La interaccion toma como referencias los entornos visuales y de manipulacion 3D, como GeoGebra y Blender, pero el objetivo diferencial es que el usuario pueda expresar lo que quiere lograr en lenguaje natural sin tener que aprender primero todas las herramientas. Un agente interpretaria la intencion, ejecutaria acciones disponibles en la escena y explicaria los conceptos utilizados para que cada accion tambien sea una oportunidad de aprendizaje.
+
+### Ejemplos de la experiencia objetivo
+
+- «Crea un cubo en el origen»: crear el objeto en `(0, 0, 0)` y explicar que el origen es la interseccion de los ejes X, Y y Z.
+- «Rota el objeto 2 45 grados sobre Y»: identificar el objeto, aplicar la rotacion alrededor del eje Y y explicar el angulo y el eje usados.
+- «Convierte el objeto 2 en un triangulo»: si la peticion no determina una forma tridimensional concreta, preguntar si el usuario quiere un triangulo plano, un prisma triangular o una piramide antes de modificar el objeto.
+
+El agente deberia privilegiar acciones comprensibles y reversibles: identificar claramente el objeto, confirmar o aclarar parametros ambiguos, ejecutar mediante operaciones permitidas y explicar el resultado en lenguaje accesible. La explicacion debe describir los conceptos y parametros aplicados, no presentar una respuesta opaca.
+
+### Estado de la vision
+
+La interfaz 3D, las operaciones basicas y la API descritas en este README corresponden al estado actual del proyecto. La conversacion en lenguaje natural, el agente de IA, la explicacion pedagogica automatica y la generacion de formas mas alla del cubo son objetivos futuros; aun no estan implementados.
 
 ## Para que sirve
 
@@ -14,7 +35,7 @@ El sistema permite:
 - Eliminar objetos con la tecla `Z`, `Delete` o `Backspace`.
 - Guardar los objetos en una base de datos SQLite.
 - Cambiar entre modo claro y modo oscuro sin afectar las operaciones del inventario.
-- Usar la barra de opciones ubicada arriba a la derecha en PC y compacta, responsive y alineada a la izquierda en celulares.
+- Usar la barra de opciones centrada en la parte superior en PC y compacta, alineada a la izquierda en celulares.
 
 ## Tecnologias utilizadas
 
@@ -41,6 +62,7 @@ El sistema permite:
 ```text
 Gestor Espacial de Inventario 3D/
 ├── README.md
+├── README_Modulos.md
 ├── render.yaml
 ├── requirements.txt
 ├── backend/
@@ -76,6 +98,70 @@ Gestor Espacial de Inventario 3D/
             └── item3d.js
 ```
 
+## Documentación
+
+La documentación disponible del proyecto incluye:
+
+- [Modulos implementados y propuestos, herramientas y hoja de ruta](README_Modulos.md)
+- [Indice de documentación](docs/README_documentacion.md)
+- [Arquitectura, endpoints y diagramas PNG](docs/arquitectura/README_arquitectura.md)
+- [Plan de pruebas manuales](tests/README_pruebas.md)
+- [Configuración de base de datos](database/README_base_datos.md)
+- [Despliegue](deploy/README_despliegue.md)
+
+## Organización del repositorio
+
+El proyecto quedó organizado por capas para facilitar mantenimiento y despliegue:
+
+```text
+Gestor Espacial de Inventario 3D/
+├── backend/
+│   ├── main.py
+│   ├── spatial_inventory.db
+│   └── app/
+│       ├── core/
+│       ├── domain/
+│       ├── infrastructure/
+│       ├── presentation/
+│       └── use_cases/
+├── frontend/
+│   ├── css/
+│   ├── js/
+│   └── index.html
+├── database/
+│   ├── README_base_datos.md
+│   └── connection.py
+├── docker/
+│   ├── Dockerfile
+│   └── docker-compose.yml
+├── deploy/
+│   └── README_despliegue.md
+├── docs/
+│   ├── README_documentacion.md
+│   └── arquitectura/
+│       ├── README_arquitectura.md
+│       └── imagenes/
+├── tests/
+│   └── README_pruebas.md
+├── README.md
+├── README_Modulos.md
+├── requirements.txt
+├── render.yaml
+└── .gitignore
+```
+
+### Responsabilidades por carpeta
+
+- `backend/`: lógica de la API y servicios del sistema.
+- `frontend/`: interface gráfica, Three.js y UX del inventario 3D.
+- `database/`: conexión, sesión y configuración de la base de datos.
+- `docker/`: contenedorización local del proyecto.
+- `deploy/`: documentación y referencias de despliegue del proyecto.
+- `docs/`: documentación técnica, arquitectura y diagramas.
+- `tests/`: plan de pruebas, casos de validación y escenarios del sistema.
+
+> La configuración activa de Render queda en [render.yaml](render.yaml) en la raíz del proyecto como única fuente de despliegue.
+
 ## Como funciona
 
 1. El usuario completa el nombre, la posicion y el color del objeto.
@@ -107,7 +193,9 @@ El modo claro u oscuro solo cambia la apariencia de la interfaz, el fondo, la il
 | `Delete` / `Backspace` | Eliminar el objeto seleccionado                                    |
 | Arrastrar con el mouse | Mover la camara alrededor de la escena                             |
 
-Los controles tambien se pueden pulsar desde la barra de opciones. En pantallas de escritorio esta barra se muestra arriba a la derecha para no cubrir el formulario de creacion; en celulares se muestra compacta, alineada a la izquierda y debajo del boton de modo claro u oscuro.
+Los controles tambien se pueden pulsar desde la barra de opciones. En pantallas de escritorio esta barra se muestra centrada en la parte superior; en celulares se muestra compacta en el costado izquierdo, mientras el boton de tema permanece en la esquina superior derecha.
+
+El editor permite mover, rotar y escalar los objetos en la escena. Actualmente, la API persiste el nombre, la posicion, el color y el espacio; la rotacion, la escala y las dimensiones no se guardan en la base de datos.
 
 ## Base de datos
 
